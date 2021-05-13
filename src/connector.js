@@ -1,19 +1,43 @@
-import { existsSync, writeFile, readFile } from 'fs';
+import {
+  existsSync,
+  writeFile,
+  writeFileSync,
+  readFile,
+  readFileSync,
+  mkdirSync,
+} from 'fs';
 import { execSync } from 'child_process';
 import { promisify } from 'bluebird';
+import { isArray } from 'lodash';
+import { log } from './utils/logger';
 
 export class ProjectConnector {
-  constructor(props) {
-    const { rootDir } = props;
+  constructor(rootDir) {
+    // const { rootDir } = props;
     this.rootDir = rootDir;
+
+    if (!this.hasFile(rootDir)) {
+      mkdirSync(this.rootDir, { recursive: true });
+    }
+
+    if (!this.hasFile('package.json')) {
+      log.info('initializing new npm project...');
+      this.bash('npm init -y');
+    }
+    this.loadPackageConfig();
   }
 
   loadPackageConfig() {
-    return require(`${this.rootDir}/package.json`);
+    const config = JSON.parse(readFileSync(`${this.rootDir}/package.json`));
+    this.config = config;
+    return config;
   }
 
   savePackageConfig(config) {
-    return promisify(writeFile)(`${this.rootDir}/package.json`, JSON.stringify(config, null, 2));
+    if (config) {
+      this.config = config;
+    }
+    return writeFileSync(`${this.rootDir}/package.json`, JSON.stringify(this.config, null, 2));
   }
 
   hasFile(relativePath) {
@@ -28,6 +52,7 @@ export class ProjectConnector {
     return promisify(readFile)(`${this.rootDir}/${relativePath}`);
   }
   
+  /* synchronously run a bash command or array of commands */
   bash(cmd, cwd) {
     const options = {
       encoding: 'utf8',
@@ -38,6 +63,8 @@ export class ProjectConnector {
     if (cwd) {
       options.cwd = cwd;
     }
-    return execSync(cmd, options);
+    return isArray(cmd)
+      ? cmd.map(c => execSync(c, options))
+      : execSync(cmd, options);
   }
 };

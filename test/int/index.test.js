@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { main } from '../../src';
+import baseInstall from '../../src/executors/base';
 
-describe('main', () => {
+describe('baseInstall', () => {
   it('should create new package', async () => {
     // TODO make this proper
-    await main({ rootDir: `${process.cwd()}/build` });
+    await baseInstall({ rootDir: `${process.cwd()}/build` });
     expect(true).to.be.true;
   }).timeout(20000);
 });
