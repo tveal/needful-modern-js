@@ -1,10 +1,12 @@
+import { dirname } from 'path';
 import {
+  appendFile,
   existsSync,
-  writeFile,
-  writeFileSync,
+  mkdirSync,
   readFile,
   readFileSync,
-  mkdirSync,
+  writeFile,
+  writeFileSync,
 } from 'fs';
 import { execSync } from 'child_process';
 import { promisify } from 'bluebird';
@@ -45,7 +47,14 @@ export class ProjectConnector {
   }
 
   saveFile(relativePath = 'error.log', content = '') {
-    return promisify(writeFile)(`${this.rootDir}/${relativePath}`, content);
+    const fullPath = `${this.rootDir}/${relativePath}`;
+    const folder = dirname(fullPath);
+    if (!existsSync(folder)) mkdirSync(folder, { recursive: true });
+    return promisify(writeFile)(fullPath, content);
+  }
+
+  appendToFile(relativePath = 'error.log', content = '') {
+    return promisify(appendFile)(`${this.rootDir}/${relativePath}`, content);
   }
 
   loadFile(relativePath) {

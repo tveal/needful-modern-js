@@ -1,6 +1,7 @@
 import { pick } from 'lodash';
 import eslintrc from '../../../.eslintrc';
 import babelrc from '../../../.babelrc';
+import nycrc from '../../../nyc.config';
 import rootPackageJson, {
   scripts,
   devDependencies,
@@ -21,6 +22,8 @@ const base = {
     'chai',
     'mocha',
     'nyc',
+    'sinon',
+    'sinon-chai',
     // linting
     '@babel/eslint-parser',
     '@babel/eslint-plugin',
@@ -55,13 +58,57 @@ export const NPM_BASE_CONFIG = {
     list: base.dependencies,
   },
   packageJson: {
-    scripts: pick(scripts, base.scripts),
+    scripts: {
+      ...pick(scripts, base.scripts),
+      clean: 'rm -rf .nyc_output/ coverage/',
+    },
     ...pick(rootPackageJson, [
       'betterScripts',
       'husky',
       'lint-staged',
     ]),
   },
+  // files
   eslintrc,
   babelrc,
+  nycrc,
+  testHelper: [
+    'import chai from \'chai\';',
+    'import sinonChai from \'sinon-chai\';',
+    '',
+    'chai.use(sinonChai);',
+    '',
+  ].join('\n'),
+  testUnit: [
+    'import { expect } from \'chai\';',
+    'import { greetings } from \'../../src\';',
+    '',
+    'describe(\'greetings\', () => {',
+    '  it(\'should return greetings\', () => {',
+    '    expect(greetings(\'Tester\')).to.equal(\'Hello Tester!\');',
+    '  });',
+    '});',
+    '',
+  ].join('\n'),
+  testInt: [
+    'import { expect } from \'chai\';',
+    '',
+    'describe(\'replace me!\', () => {',
+    '  it(\'should do something useful\', () => {',
+    '    // TODO: make real integration test',
+    '    expect(true).to.be.true;',
+    '  });',
+    '});',
+    '',
+  ].join('\n'),
+  srcIndex: [ // eslint-disable-next-line no-template-curly-in-string
+    'export const greetings = recipient => `Hello ${recipient}!`;',
+    '',
+    'const main = () => {',
+    '  console.log(greetings(\'World\'));',
+    '};',
+    '',
+    'main();',
+    '',
+  ].join('\n'),
 };

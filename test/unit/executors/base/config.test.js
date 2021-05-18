@@ -7,7 +7,15 @@ import {
 describe('base executor', () => {
   describe('NPM_BASE_CONFIG', () => {
     it('should have proper config', async () => {
-      expect(omit(NPM_BASE_CONFIG, ['babelrc', 'eslintrc'])).to.deep.equal({
+      expect(omit(NPM_BASE_CONFIG, [
+        'babelrc',
+        'eslintrc',
+        'nycrc',
+        'testHelper',
+        'testUnit',
+        'testInt',
+        'srcIndex',
+      ])).to.deep.equal({
         depsDev: {
           versioned: [
             '@babel/core@7.14.2',
@@ -19,6 +27,8 @@ describe('base executor', () => {
             'chai@4.3.4',
             'mocha@8.4.0',
             'nyc@15.1.0',
+            'sinon@10.0.0',
+            'sinon-chai@3.6.0',
             // linting
             '@babel/eslint-parser@7.14.3',
             '@babel/eslint-plugin@7.13.16',
@@ -39,6 +49,8 @@ describe('base executor', () => {
             'chai',
             'mocha',
             'nyc',
+            'sinon',
+            'sinon-chai',
             // linting
             '@babel/eslint-parser',
             '@babel/eslint-plugin',
@@ -60,6 +72,7 @@ describe('base executor', () => {
         },
         packageJson: {
           'scripts': {
+            'clean': 'rm -rf .nyc_output/ coverage/',
             'test': 'better-npm-run test',
             'test:int': 'better-npm-run test:int',
             // linting
@@ -76,7 +89,7 @@ describe('base executor', () => {
               },
             },
             'test:int': {
-              command: 'nyc mocha --require @babel/register "./test/int/**/*.test.js"',
+              command: 'mocha --require @babel/register "./test/int/**/*.test.js"',
               env: {
                 NODE_ENV: 'test',
               },
@@ -157,6 +170,74 @@ describe('base executor', () => {
         },
         globals: {},
       });
+      expect(NPM_BASE_CONFIG.nycrc).to.deep.equal({
+        'lines': 100,
+        'statements': 100,
+        'functions': 100,
+        'branches': 100,
+        'include': [
+          'src/**/*.js',
+        ],
+        'exclude': [
+          'test/**/*.test.js',
+        ],
+        'require': [
+          '@babel/register',
+          './test/helper.js',
+        ],
+        'reporter': [
+          'text',
+          'json-summary',
+          'lcov',
+          'html',
+          'text-summary',
+        ],
+        'sourceMap': false,
+        'instrument': false,
+        'cache': false,
+        'check-coverage': true,
+        'all': true,
+      });
+      expect(NPM_BASE_CONFIG.testHelper).to.deep.equal([
+        'import chai from \'chai\';',
+        'import sinonChai from \'sinon-chai\';',
+        '',
+        'chai.use(sinonChai);',
+        '',
+      ].join('\n'));
+      expect(NPM_BASE_CONFIG.testUnit.split('\n')).to.deep.equal([
+        'import { expect } from \'chai\';',
+        'import { greetings } from \'../../src\';',
+        '',
+        'describe(\'greetings\', () => {',
+        '  it(\'should return greetings\', () => {',
+        '    expect(greetings(\'Tester\')).to.equal(\'Hello Tester!\');',
+        '  });',
+        '});',
+        '',
+      ]);
+      expect(NPM_BASE_CONFIG.testInt.split('\n')).to.deep.equal([
+        'import { expect } from \'chai\';',
+        '',
+        'describe(\'replace me!\', () => {',
+        '  it(\'should do something useful\', () => {',
+        '    // TODO: make real integration test',
+        '    expect(true).to.be.true;',
+        '  });',
+        '});',
+        '',
+      ]);
+      expect(NPM_BASE_CONFIG.srcIndex.split('\n')).to.deep.equal([
+        // eslint-disable-next-line no-template-curly-in-string
+        'export const greetings = recipient => `Hello ${recipient}!`;',
+        '',
+        'const main = () => {',
+        '  console.log(greetings(\'World\'));',
+        '};',
+        '',
+        'main();',
+        '',
+      ]);
     });
   });
 });

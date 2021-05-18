@@ -6,5 +6,5 @@ describe('baseInstall', () => {
     // TODO make this proper
     await baseInstall({ rootDir: `${process.cwd()}/build` });
     expect(true).to.be.true;
-  }).timeout(20000);
+  }).timeout(40000);
 });
