@@ -1,4 +1,3 @@
-
 export * from './logger';
 
 export const commands = {
@@ -9,12 +8,12 @@ export const commands = {
 // abstracted for mocking in tests :)
 export const getProcessDir = () => process.cwd();
 
-export const toUnitOfWork = (argv) => ({
+export const toUnitOfWork = argv => ({
   argv,
   rootDir: getRootDir(argv),
 });
 
-const getRootDir = (argv) => {
+const getRootDir = argv => {
   if (argv.package) return `${getProcessDir()}/${argv.package}`;
 
   if (
@@ -22,6 +21,6 @@ const getRootDir = (argv) => {
   ) {
     return `${getProcessDir()}/${argv._[0]}`;
   }
-  
+
   return getProcessDir();
 };

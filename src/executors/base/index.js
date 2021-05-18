@@ -12,7 +12,7 @@ export default async ({ rootDir, argv={} }) => {
     project.bash(`npm rm ${depsToDelete.join(' ')}`);
     project.loadPackageConfig();
   }
-  
+
   const depType = argv.latest ? 'list' : 'versioned';
   project.bash([
     `npm i -D ${NPM_BASE_CONFIG.depsDev[depType].join(' ')}`,
@@ -23,19 +23,20 @@ export default async ({ rootDir, argv={} }) => {
   merge(project.config, NPM_BASE_CONFIG.packageJson);
   project.savePackageConfig();
 
-  await project.saveFile('.babelrc', JSON.stringify(NPM_BASE_CONFIG.babelrc, null, 2));
+  await Promise.all([
+    project.saveFile('.babelrc', JSON.stringify(NPM_BASE_CONFIG.babelrc, null, 2)),
+    project.saveFile('.eslintrc', JSON.stringify(NPM_BASE_CONFIG.eslintrc, null, 2)),
+  ]);
 };
 
-const getExistingDepsToDelete = (config) => [
+const getExistingDepsToDelete = config => [
   ...Object.keys(get(config, 'devDependencies', {})),
   ...Object.keys(get(config, 'dependencies', {})),
 ].filter((dep = '') => (
   [
     ...NPM_BASE_CONFIG.depsDev.list,
-    ...NPM_BASE_CONFIG.deps.list
+    ...NPM_BASE_CONFIG.deps.list,
   ].includes(dep)
-  ||
-  dep.startsWith('babel-')
-  ||
-  dep.startsWith('@babel/')
+  || dep.startsWith('babel-')
+  || dep.startsWith('@babel/')
 ));

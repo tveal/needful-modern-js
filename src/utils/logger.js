@@ -11,7 +11,7 @@ export const createLogger = (unitId, app) => {
     error: () => { },
     debug: () => { },
   };
-  Object.keys(log).forEach((level) => {
+  Object.keys(log).forEach(level => {
     let loggerPrefix = level;
     if (app) {
       loggerPrefix = `${level}:${app}`;
@@ -20,7 +20,7 @@ export const createLogger = (unitId, app) => {
     log[level] = DEBUG(loggerPrefix);
     // log[level].log = console.log.bind(console); // send to stdout instead of stderr
   });
-  const id = unitId ? unitId : uuidv4();
+  const id = unitId || uuidv4();
   return {
     ...log,
     start: () => log.info('start: %s', id),
@@ -29,7 +29,7 @@ export const createLogger = (unitId, app) => {
 };
 
 export const log = createLogger();
-export const setLogLevel = (argv) => {
+export const setLogLevel = argv => {
   const { info, quiet, debug } = argv;
   let level = ERROR_LEVEL;
   if (debug) {
@@ -41,8 +41,8 @@ export const setLogLevel = (argv) => {
   }
   DEBUG.enable(level);
 };
-export const runner = (things = {}, uow) => {
-  return Promise.all(Object.keys(things).map(async (executor) => {
+export const runner = (things = {}, uow) => Promise.all(
+  Object.keys(things).map(async executor => {
     const logger = createLogger(executor);
     logger.start();
     const result = await things[executor]({ ...uow, executor });
@@ -51,5 +51,5 @@ export const runner = (things = {}, uow) => {
       executor,
       result,
     };
-  }));
-};
+  }),
+);

@@ -1,31 +1,47 @@
 import { pick } from 'lodash';
-import {
+import eslintrc from '../../../.eslintrc';
+import babelrc from '../../../.babelrc';
+import rootPackageJson, {
   scripts,
-  betterScripts,
   devDependencies,
   dependencies,
 } from '../../../package.json';
 
-const toVersioned = (deps) => Object.keys(deps).map(key => (`${key}@${deps[key].replace(/\^/g, '')}`));
+const toVersioned = deps => Object.keys(deps).map(key => (`${key}@${deps[key].replace(/\^/g, '')}`));
 
 const base = {
   devDependencies: [
-    "@babel/core",
-    "@babel/plugin-transform-runtime",
-    "@babel/preset-env",
-    "@babel/register",
-    "babel-plugin-istanbul",
-    "better-npm-run",
-    "chai",
-    "mocha",
-    "nyc",
+    // babel + test
+    '@babel/core',
+    '@babel/plugin-transform-runtime',
+    '@babel/preset-env',
+    '@babel/register',
+    'babel-plugin-istanbul',
+    'better-npm-run',
+    'chai',
+    'mocha',
+    'nyc',
+    // linting
+    '@babel/eslint-parser',
+    '@babel/eslint-plugin',
+    'eslint',
+    'eslint-config-airbnb-base',
+    'eslint-formatter-pretty',
+    'eslint-plugin-import',
+    'husky',
+    'lint-staged',
   ],
   dependencies: [
-    "lodash",
+    'lodash',
   ],
   scripts: [
     'test',
     'test:int',
+    // linting
+    'lint',
+    'lint:js',
+    'lint:staged',
+    'pretest',
   ],
 };
 
@@ -40,28 +56,12 @@ export const NPM_BASE_CONFIG = {
   },
   packageJson: {
     scripts: pick(scripts, base.scripts),
-    betterScripts,
+    ...pick(rootPackageJson, [
+      'betterScripts',
+      'husky',
+      'lint-staged',
+    ]),
   },
-  babelrc: {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "14"
-          }
-        }
-      ]
-    ],
-    "plugins": [
-      "@babel/plugin-transform-runtime"
-    ],
-    "env": {
-      "test": {
-        "plugins": [
-          "istanbul"
-        ]
-      }
-    }
-  },
+  eslintrc,
+  babelrc,
 };

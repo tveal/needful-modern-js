@@ -51,7 +51,7 @@ export class ProjectConnector {
   loadFile(relativePath) {
     return promisify(readFile)(`${this.rootDir}/${relativePath}`);
   }
-  
+
   /* synchronously run a bash command or array of commands */
   bash(cmd, cwd) {
     const options = {
@@ -67,4 +67,4 @@ export class ProjectConnector {
       ? cmd.map(c => execSync(c, options))
       : execSync(cmd, options);
   }
-};
+}
