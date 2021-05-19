@@ -56,7 +56,7 @@ export default async ({ rootDir, argv = {} }) => {
 const getExistingDepsToDelete = config => [
   ...Object.keys(get(config, 'devDependencies', {})),
   ...Object.keys(get(config, 'dependencies', {})),
-].filter((dep = '') => (
+].filter(dep => (
   [
     ...NPM_BASE_CONFIG.depsDev.list,
     ...NPM_BASE_CONFIG.deps.list,

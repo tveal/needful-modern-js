@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* istanbul ignore file */
 import yargs from 'yargs';
 import base from './commands/base';
 

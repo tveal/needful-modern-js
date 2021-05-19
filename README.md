@@ -4,19 +4,36 @@
 
 ## Install
 
-**From published npm**
 ```bash
 npm i -g @needful/modern-js
 ```
 
-**From the source**
+## Usage
+
+Seed new npm package with base config
+
 ```bash
-npm ci
-npm run build:ln
+modern-js -p my-cool-pkg
 ```
 
-## Usage
+Then run tests!
+
+```bash
+cd my-cool-pkg
+npm t
+```
+
+View help
 
 ```bash
 modern-js -h
+```
+
+## From Source Code
+
+**Install**
+
+```bash
+npm ci
+npm run build:ln
 ```

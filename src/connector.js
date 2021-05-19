@@ -18,7 +18,7 @@ export class ProjectConnector {
     // const { rootDir } = props;
     this.rootDir = rootDir;
 
-    if (!this.hasFile(rootDir)) {
+    if (!existsSync(rootDir)) {
       mkdirSync(this.rootDir, { recursive: true });
     }
 
@@ -35,10 +35,7 @@ export class ProjectConnector {
     return config;
   }
 
-  savePackageConfig(config) {
-    if (config) {
-      this.config = config;
-    }
+  savePackageConfig() {
     return writeFileSync(`${this.rootDir}/package.json`, JSON.stringify(this.config, null, 2));
   }
 
@@ -46,14 +43,14 @@ export class ProjectConnector {
     return existsSync(`${this.rootDir}/${relativePath}`);
   }
 
-  saveFile(relativePath = 'error.log', content = '') {
+  saveFile(relativePath, content) {
     const fullPath = `${this.rootDir}/${relativePath}`;
     const folder = dirname(fullPath);
     if (!existsSync(folder)) mkdirSync(folder, { recursive: true });
     return promisify(writeFile)(fullPath, content);
   }
 
-  appendToFile(relativePath = 'error.log', content = '') {
+  appendToFile(relativePath, content) {
     return promisify(appendFile)(`${this.rootDir}/${relativePath}`, content);
   }
 
