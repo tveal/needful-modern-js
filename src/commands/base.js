@@ -26,7 +26,7 @@ export default {
 
     try {
       await runner(tasks, uow, false);
-    } catch (e) {
+    } catch (e) /* istanbul ignore next */ {
       log.error(e);
       process.exit(-1);
     }

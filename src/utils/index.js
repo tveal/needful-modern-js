@@ -1,3 +1,5 @@
+import { get } from 'lodash';
+
 export * from './logger';
 
 export const commands = {
@@ -17,7 +19,7 @@ const getRootDir = argv => {
   if (argv.package) return `${getProcessDir()}/${argv.package}`;
 
   if (
-    argv._[0] && !Object.values(commands).includes(argv._[0])
+    get(argv, '_[0]') && !Object.values(commands).includes(argv._[0])
   ) {
     return `${getProcessDir()}/${argv._[0]}`;
   }

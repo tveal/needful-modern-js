@@ -1,6 +1,12 @@
 import sinon from 'sinon';
 import fs from 'fs';
+import { isFunction } from 'lodash';
 import childProcess from 'child_process';
+
+// https://github.com/tveal/software-engineer-handbook/blob/main/book/3be79bb7-d905-4e88-9f35-3b6505c638ab.md#comparing-objects-containing-functions
+export const subFunctions = obj => JSON.parse(
+  JSON.stringify(obj, (k, v) => (isFunction(v) ? 'Function' : v)),
+);
 
 export const TestFileSystem = {
   files: {},
