@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { TestFileSystem } from '../../../fixtures';
-import baseInstall from '../../../../src/executors/base';
+import baseInstall from '../../../../src/tasks/base';
 
 const BASE_DEV_DEP_CMD = [
   'npm i -D',
@@ -58,7 +58,7 @@ const BASH_OPTIONS = {
   cwd: '/tmp',
 };
 
-describe('base', () => {
+describe('src/tasks/base/index.js', () => {
   afterEach(() => {
     TestFileSystem.reset();
   });

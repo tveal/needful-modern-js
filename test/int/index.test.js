@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import baseInstall from '../../src/executors/base';
+import baseInstall from '../../src/tasks/base';
 
 describe('baseInstall', () => {
   it('should create new package', async () => {

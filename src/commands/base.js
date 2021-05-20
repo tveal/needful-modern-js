@@ -1,9 +1,8 @@
-// import { log, setLogLevel, initialize } from '../utils';
 import {
   log, setLogLevel, runner, toUnitOfWork, commands,
 } from '../utils';
 import { globalOptions } from './shared';
-import baseInstall from '../executors/base';
+import baseInstall from '../tasks/base';
 
 export default {
   command: [commands.BASE, '$0'],
@@ -20,11 +19,13 @@ export default {
     setLogLevel(argv);
     const uow = toUnitOfWork(argv);
 
+    const tasks = {
+      installer: async u => log.info('uow: %j', u),
+      baseInstall,
+    };
+
     try {
-      await runner({
-        installer: u => log.info('argv: %j', u),
-        baseInstall,
-      }, uow);
+      await runner(tasks, uow, false);
     } catch (e) {
       log.error(e);
       process.exit(-1);

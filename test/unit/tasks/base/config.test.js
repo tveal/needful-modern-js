@@ -2,9 +2,9 @@ import { expect } from 'chai';
 import { omit } from 'lodash';
 import {
   NPM_BASE_CONFIG,
-} from '../../../../src/executors/base/config';
+} from '../../../../src/tasks/base/config';
 
-describe('base executor', () => {
+describe('src/tasks/base/config.js', () => {
   describe('NPM_BASE_CONFIG', () => {
     it('should have proper config', async () => {
       expect(omit(NPM_BASE_CONFIG, [

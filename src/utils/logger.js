@@ -1,3 +1,4 @@
+import _ from 'highland';
 import { v4 as uuidv4 } from 'uuid';
 import DEBUG from 'debug';
 import Promise from 'bluebird';
@@ -20,12 +21,7 @@ export const createLogger = (unitId, app) => {
     log[level] = DEBUG(loggerPrefix);
     // log[level].log = console.log.bind(console); // send to stdout instead of stderr
   });
-  const id = unitId || uuidv4();
-  return {
-    ...log,
-    start: () => log.info('start: %s', id),
-    end: () => log.info('end: %s', id),
-  };
+  return log;
 };
 
 export const log = createLogger();
@@ -41,15 +37,29 @@ export const setLogLevel = argv => {
   }
   DEBUG.enable(level);
 };
-export const runner = (things = {}, uow) => Promise.all(
-  Object.keys(things).map(async executor => {
-    const logger = createLogger(executor);
-    logger.start();
-    const result = await things[executor]({ ...uow, executor });
-    logger.end();
-    return {
-      executor,
-      result,
-    };
-  }),
-);
+
+export const runner = (tasks = {}, uow, parallel = true) => _(Object.keys(tasks))
+  .map(task => ({
+    taskName: task,
+    task: tasks[task],
+    unitId: uuidv4(),
+    ...uow,
+  }))
+  .tap(debug('START %j'))
+  .map(runTheTask)
+  .parallel(parallel ? 10 : 1)
+  .tap(debug('END %j'))
+  .collect()
+  .toPromise(Promise);
+
+const debug = msg => data => log.debug(msg, data);
+const runTheTask = uow => {
+  const { taskName, task } = uow;
+  const theTask = async () => {
+    log.info(`start: ${taskName}`);
+    const result = await task(uow);
+    log.info(`end: ${taskName}`);
+    return { ...uow, result };
+  };
+  return _(theTask());
+};

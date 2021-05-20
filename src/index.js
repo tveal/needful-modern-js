@@ -13,12 +13,9 @@ yargs
 
 /*
   TODO
-  - eslint
   - build cleanup
   - int test proper asserts
   - .gitignore merge with project
-  - nyc config
-  - test folder setup?
   - build script?
   - conditionals
     - webpack?

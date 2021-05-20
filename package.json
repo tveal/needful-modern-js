@@ -70,6 +70,7 @@
   "dependencies": {
     "bluebird": "^3.7.2",
     "debug": "^4.3.1",
+    "highland": "^2.13.5",
     "lodash": "^4.17.21",
     "uuid": "^8.3.2",
     "yargs": "^17.0.1"
