@@ -2,17 +2,25 @@
   "name": "@needful/modern-js",
   "version": "0.0.0",
   "description": "",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "modern-js": "lib/index.js"
   },
   "files": [
-    "lib"
+    "lib",
+    ".eslintrc.js",
+    ".babelrc.js",
+    "nyc.config.js"
   ],
   "scripts": {
     "clean": "rm -rf .nyc_output/ lib/ coverage/ build/",
     "build": "babel src --out-dir lib",
     "build:ln": "npm run build && npm ln",
     "build:go": "npm run build && node lib/index.js",
+    "pack": "npm run clean && npm run build && mkdir build && cd build && npm pack ../",
+    "pack:i": "npm run pack && find build/ -name '*.tgz' -exec npm i -g ./{} \\;",
     "lint": "npm run lint:js",
     "lint:js": "eslint --fix --format=node_modules/eslint-formatter-pretty .",
     "lint:staged": "lint-staged",
@@ -68,6 +76,7 @@
     "sinon-chai": "^3.6.0"
   },
   "dependencies": {
+    "@babel/runtime": "^7.14.0",
     "bluebird": "^3.7.2",
     "debug": "^4.3.1",
     "highland": "^2.13.5",
