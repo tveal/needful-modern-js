@@ -48,8 +48,8 @@ const BASE_DEV_DEP_CMD_NO_VLOCK = [
   'lint-staged',
 ].join(' ');
 
-const BASE_DEP_CMD = 'npm i lodash@4.17.21';
-const BASE_DEP_CMD_NO_VLOCK = 'npm i lodash';
+const BASE_DEP_CMD = 'npm i @babel/runtime@7.14.0 lodash@4.17.21';
+const BASE_DEP_CMD_NO_VLOCK = 'npm i @babel/runtime lodash';
 
 const BASH_OPTIONS = {
   encoding: 'utf8',

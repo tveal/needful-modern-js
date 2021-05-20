@@ -35,6 +35,7 @@ const base = {
     'lint-staged',
   ],
   dependencies: [
+    '@babel/runtime',
     'lodash',
   ],
   scripts: [

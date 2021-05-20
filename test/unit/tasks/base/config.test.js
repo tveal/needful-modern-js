@@ -64,9 +64,11 @@ describe('src/tasks/base/config.js', () => {
         },
         deps: {
           versioned: [
+            '@babel/runtime@7.14.0',
             'lodash@4.17.21',
           ],
           list: [
+            '@babel/runtime',
             'lodash',
           ],
         },
